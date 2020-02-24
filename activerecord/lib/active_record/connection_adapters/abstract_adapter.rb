@@ -89,7 +89,7 @@ module ActiveRecord
         @instrumenter        = ActiveSupport::Notifications.instrumenter
         @logger              = logger
         @config              = config
-        @pool                = ActiveRecord::ConnectionAdapters::NullPool.new
+        @pool                = ActiveRecord::ConnectionAdapters::NullPool.new(self)
         @idle_since          = Concurrent.monotonic_time
         @visitor = arel_visitor
         @statements = build_statement_pool
@@ -195,11 +195,10 @@ module ActiveRecord
       end
 
       def schema_cache
-        @pool.get_schema_cache(self)
+        @pool.get_schema_cache
       end
 
       def schema_cache=(cache)
-        cache.connection = self
         @pool.set_schema_cache(cache)
       end
 

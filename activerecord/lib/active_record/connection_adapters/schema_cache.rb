@@ -11,10 +11,10 @@ module ActiveRecord
       end
 
       attr_reader :version
-      attr_accessor :connection
+      attr_accessor :pool
 
-      def initialize(conn)
-        @connection = conn
+      def initialize(pool)
+        @pool = pool
 
         @columns      = {}
         @columns_hash = {}
@@ -30,6 +30,10 @@ module ActiveRecord
         @primary_keys = @primary_keys.dup
         @data_sources = @data_sources.dup
         @indexes      = @indexes.dup
+      end
+
+      def connection
+        @pool.connection
       end
 
       def encode_with(coder)

@@ -21,10 +21,8 @@ module ActiveRecord
 
   module ConnectionAdapters
     module AbstractPool # :nodoc:
-      def get_schema_cache(connection)
-        self.schema_cache ||= SchemaCache.new(connection)
-        schema_cache.connection = connection
-        schema_cache
+      def get_schema_cache
+        self.schema_cache ||= SchemaCache.new(self)
       end
 
       def set_schema_cache(cache)
@@ -36,6 +34,11 @@ module ActiveRecord
       include ConnectionAdapters::AbstractPool
 
       attr_accessor :schema_cache
+      attr_accessor :connection
+
+      def initialize(connection)
+        @connection = connection
+      end
     end
 
     # Connection pool base class for managing Active Record database
